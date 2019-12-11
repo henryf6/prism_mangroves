@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "## ******************************************************************** ##\n## mangrove_spectral_indices.R \n##\n## Author: Henry Frye\n## Date Created: Aug 29 2019\n##\n##\n## Purpose:\n## Comparison of major spectral indices between species\n## Indices from summary table 1 of Ollinger 2011 in New Phytologist\n## ******************************************************************** ##\n\n## ******************************************************************** ##\n####Set Up####\n## ******************************************************************** ##\nrm(list = ls())\n\n# Set working directory\nif(Sys.info()['user']=='henryfrye') setwd(\"/Users/henryfrye/Dropbox/Intellectual_Endeavours/UConn/Research/phd_research/chapter_2\")\n\n# Loading Packages\nlibrary(tidyr)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(ggthemes)\nlibrary(reshape2)\n\n# Load Data\nblack <- read.csv(file = 'mangrove_data/Leaf_spectra/blackMangroves_leaves.csv')\nred <- read.csv(file = 'mangrove_data/Leaf_spectra/redMangroves_leaves.csv')\nwhite <- read.csv(file = 'mangrove_data/Leaf_spectra/whiteMangroves_leaves.csv')\n\n#transpose data format (run once only or re-run with removing objects)\nbt <- t(black)\ncolnames(bt) <- bt[1,]\nblack <- bt[-1,]\n\nrt <- t(red)\ncolnames(rt) <- rt[1,]\nred <- rt[-1,]\n\nwt <- t(white)\ncolnames(wt) <- wt[1,]\nwhite <- wt[-1,]\n\n#merge all data into one dataframe\nall_spp <- rbind(black,white,red)\nall_spp <- as.data.frame(all_spp)\nall_spp$species <- c(rep(\"black\",20), rep(\"white\",20), rep(\"red\",20) )\nall_spp <- all_spp %>% dplyr::select(species,'350':'2500')\n\nspecindices <- data.frame(species = c(rep(\"black\",20), rep(\"white\",20), rep(\"red\",20) ),\n                          NDVI = (all_spp$'800' - all_spp$'680') / (all_spp$'800' + all_spp$'680'),\n                          PRI = (all_spp$'531' - all_spp$'570') / (all_spp$'531' + all_spp$'570'),\n                          WI = (all_spp$'900'/ all_spp$'970'))\n\n\n## ******************************************************************** ##\n####Spectral index comparison between species####\n## ******************************************************************** ##\n\n#NDVI\nNDVI <- ggplot(specindices, aes(x = species, y = NDVI)) + \n  geom_boxplot(notch = TRUE) + \n  xlab(\"Species\") +\n  ylab(\"Normalized Difference Vegetation Index\") +\n  theme_classic() +\n  theme(text = element_text(size=20, family = \"Helvetica\")) \nNDVI\nggsave(\"mangrove_figures/NDVI_species.png\", NDVI, dpi = 300)\n\n\n#PRI\nPRI <- ggplot(specindices, aes(x = species, y = PRI)) + \n  geom_boxplot(notch = TRUE) + \n  xlab(\"Species\") +\n  ylab(\"Photochemical Reflectance Index\") +\n  theme_classic() +\n  theme(text = element_text(size=20, family = \"Helvetica\"))\nPRI\nggsave(\"mangrove_figures/PRI_species.png\", PRI, dpi = 300)\n\n#WI\nWI <- ggplot(specindices, aes(x = species, y = WI)) +\n  geom_boxplot(notch = TRUE) + \n  xlab(\"Species\") +\n  ylab(\"Water Index\") +\n  theme_classic() + \n  theme(text = element_text(size=20, family = \"Helvetica\")) \nWI\nggsave(\"mangrove_figures/WI_species.png\",WI, dpi = 300)\n\n",
+    "created" : 1567097466968.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3870208620",
+    "id" : "EC04BC0A",
+    "lastKnownWriteTime" : 1567112637,
+    "last_content_update" : 1567112637448,
+    "path" : "~/Dropbox/Intellectual_Endeavours/UConn/Research/phd_research/chapter_2/mangroves_code/mangrove_spectral_indices.R",
+    "project_path" : "mangrove_spectral_indices.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
